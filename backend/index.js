@@ -5,6 +5,8 @@ import dotenv from "dotenv";
 import connectDB from "./utils/db.js";
 dotenv.config({})
 import userRoute from "./routes/User.route.js"
+import companyRoute from "./routes/Company.route.js"
+import jobRoute from "./routes/job.route.js"
 
 const app = express();
 
@@ -22,7 +24,9 @@ app.use(cors(corsoptions));
 const PORT = process.env.PORT || 3000;
 
 // API's
-app.use("/api/v1/user", userRoute)
+app.use("/api/v1/user", userRoute);
+app.use("/api/v1/company", companyRoute)
+app.use("/api/v1/job", jobRoute)
 
 app.listen(PORT, () => {
     connectDB();
