@@ -1,12 +1,11 @@
 import { User } from "../models/User.model.js";
-import bcrypt from "bcrypt.js"
-import jwt from "jsonwebtoken"
-
+import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
 
 export const register = async (req,res)=>{
     try {
         const {fullname, email, phoneNumber, password, role} = req.body;
-        if(!fullname || !email || !phoneNumber || !password || role){
+        if(!fullname || !email || !phoneNumber || !password || !role){
             return res.status(400).json({
                 message:"Something is missing",
                 success: false
@@ -37,16 +36,17 @@ await User.create({
     }
 }
 
+
 export const login = async (req, res) => {
     try{
         const {email, password, role} = req.body;       
-         if(!email || !password || role){
+         if(!email || !password || !role){
             return res.status(400).json({
                 message:"Something is missing",
                 success: false
             })
         };
-          const user = await User.findOne({email});
+         let user = await User.findOne({email});
     if(!user){
         return res.status(400).json({
             message: "incorrect email or password",
@@ -61,8 +61,8 @@ export const login = async (req, res) => {
         })
     };
     
-    if(role === !user.role){
-        return req.status(400).json({
+    if(role !== user.role){
+        return res.status(400).json({
             message: "Account doesn't exist with current role",
             success: false
         })
@@ -70,22 +70,22 @@ export const login = async (req, res) => {
     }
     
     const tokenData = {
-userId: user._id
+        userId: user._id
     }
 
-    const token = await jwt.sign(tokenData, process.env.SECRET_KEY, {expiresIn: 'id'} );
+    const token = await jwt.sign(tokenData, process.env.SECRET_KEY, {expiresIn: '1d'} );
 
     user = {
-        _id:User._id,
-        fullname: User.fullname,
-        email: User.email,
-        phoneNumber: USer.phoneNumber,
-        role:User.role,
-        profile:User.profile
+        _id:user._id,
+        fullname: user.fullname,
+        email: updateProfiles.email,
+        phoneNumber: user.phoneNumber,
+        role:user.role,
+        profile:user.profile
     }
     
-    return res.status(200).cookie('token',token, {maxAge:1*24*60*60*1000, httpsOnly:true, sameSite: 'strict'}).json({
-        message: 'welcome back ${user.fullname}',
+    return res.status(200).cookie('token',token, {maxAge:1*24*60*60*1000, httpOnly:true, sameSite: 'strict'}).json({
+        message: `welcome back ${user.fullname}`,
         success: true
     })
     }
@@ -93,6 +93,7 @@ userId: user._id
         console.log('error')
     }
 }
+
 
 export const logout = async (req, res) => {
     try {
@@ -117,7 +118,7 @@ let skillsArray;
         }
 
         const userId = req.id;
-        let User = await User.findById(userId);
+        let user = await User.findById(userId);
         if(!user){
             return res.status(400).json({
                 message: 'User no t found',
@@ -135,17 +136,17 @@ let skillsArray;
         await user.save();
 
            user = {
-        _id:User._id,
-        fullname: User.fullname,
-        email: User.email,
-        phoneNumber: USer.phoneNumber,
-        role:User.role,
-        profile:User.profile
+        _id:user._id,
+        fullname: user.fullname,
+        email: user.email,
+        phoneNumber: user.phoneNumber,
+        role:user.role,
+        profile:user.profile
     }
-    return res.status(400).json({
+    return res.status(200).json({
         message: 'profile updated successfully',
         user,
-        success:false
+        success:true
     })
         
     } catch (error) {

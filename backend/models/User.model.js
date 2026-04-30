@@ -1,4 +1,4 @@
-import mongoose , {schema}from "mongoose";
+import mongoose, { Schema }  from "mongoose";
 
 const userSchema = new mongoose.Schema(
     {
@@ -29,7 +29,7 @@ const userSchema = new mongoose.Schema(
             skills: [{type:String}],
             resume:{type:String},
             resumeOriginalName:{type:String},
-            company:{type:mongoose.Schema.Types.objectId, 
+            company:{type:mongoose.Schema.Types.ObjectId, 
                      ref:'Company'},
             profilePhoto:{
                 type:String,
